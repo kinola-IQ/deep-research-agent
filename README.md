@@ -123,3 +123,5 @@ incoming updates
 - Addition of custom exceptions for implementing easy to understand error exceptions
 - addition of test modules to validate application function
 - implemention of a user interface
+- implementation of an evaluation module
+- persistence of logs to memory
