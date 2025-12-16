@@ -8,11 +8,13 @@ from llama_index.core.workflow import (
 )
 
 # third pary modules
-from ..events import (
+from ..utils.events import (
     GenerateEvent,
     QuestionEvent,
     AnswerEvent,
-    ProgressEvent
+    ProgressEvent,
+    FeedbackEvent,
+    ReviewEvent,
 )
 
 
@@ -25,7 +27,7 @@ class WorkflowClass(Workflow):
     @step
     async def setup(self, ctx: Context, ev: StartEvent) -> GenerateEvent:
         self.question_agent = ev.question_agent
-        self.answer_agent = ev.research_agent
+        self.answer_agent = ev.answer_agent
         self.report_agent = ev.report_agent
         self.review_agent = ev.review_agent
         self.review_cycles = 0

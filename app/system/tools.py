@@ -3,7 +3,12 @@ import os
 from llama_index.core.workflow import Context
 from tavily import AsyncTavilyClient
 
-tavily_api_key = os.environ['tavily_api_key']
+# Prefer conventional uppercase env var names
+TAVILY_API_KEY = os.environ.get('TAVILY_API_KEY')
+if not TAVILY_API_KEY:
+    raise RuntimeError("Missing required environment variable 'TAVILY_API_KEY'. Set it to your Tavily API key.")
+
+tavily_api_key = TAVILY_API_KEY
 
 # tools to be distributed amongst the agents
 

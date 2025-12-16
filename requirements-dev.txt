@@ -1,0 +1,9 @@
+pytest
+httpx
+fastapi
+uvicorn
+pytest-asyncio
+requests
+ruff
+black
+pre-commit

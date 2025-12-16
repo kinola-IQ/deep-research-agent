@@ -1,0 +1,72 @@
+<!-- ui/index.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Deep Research — Minimal UI</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width:900px; margin:24px; }
+    #progress { white-space: pre-wrap; border:1px solid #ddd; padding:12px; min-height:120px; }
+    #result { margin-top:16px; border:1px solid #ddd; padding:12px; }
+  </style>
+</head>
+<body>
+  <h1>Deep Research</h1>
+  <textarea id="q" rows="6" style="width:100%"></textarea><br/>
+  <button id="go">Run (stream)</button>
+  <div id="progress"></div>
+  <div id="result"></div>
+
+<script>
+async function streamResearch(query, apiBase) {
+  const resp = await fetch(apiBase + "/v1/agent/stream", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({query})
+  });
+
+  if (!resp.body) {
+    document.getElementById('progress').textContent = "No streaming body available. Status: " + resp.status;
+    return;
+  }
+
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = '';
+  const progressEl = document.getElementById('progress');
+  const resultEl = document.getElementById('result');
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) break;
+    buf += decoder.decode(value, {stream:true});
+    // server sends SSE-like lines: "data: {json}\n\n"
+    const parts = buf.split("\n\n");
+    for (let i = 0; i < parts.length - 1; ++i) {
+      const line = parts[i].trim();
+      if (!line) continue;
+      const payload = line.replace(/^data:\s*/, "");
+      try {
+        const obj = JSON.parse(payload);
+        if (obj.type === "progress") {
+          progressEl.textContent += obj.message + "\n";
+        } else if (obj.type === "final") {
+          resultEl.innerHTML = obj.response; // backend returns markdown; optionally convert to HTML
+        }
+      } catch(e) {
+        progressEl.textContent += "[unparsed chunk] " + payload + "\n";
+      }
+    }
+    buf = parts[parts.length - 1];
+  }
+}
+
+document.getElementById('go').addEventListener('click', () => {
+  const apiBase = "http://localhost:8000"; // change if needed
+  document.getElementById('progress').textContent = "";
+  document.getElementById('result').textContent = "Waiting for final report...";
+  streamResearch(document.getElementById('q').value, apiBase);
+});
+</script>
+</body>
+</html>

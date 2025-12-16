@@ -24,9 +24,9 @@ Architecture
 
 Prerequisites
 -------------
-- Python 3.10+ recommended.
+- Python 3.11 recommended.
 - Ollama installed and running locally with access to the models in `OllamaClass.model_list` (default: `qwen3:4b`, `gemma3:4b`).
-- Tavily API key available as environment variable `tavily_api_key`.
+- Tavily API key available as environment variable `TAVILY_API_KEY`.
 - (Optional) `uvicorn` for local serving during development.
 
 Installation
@@ -35,19 +35,19 @@ Installation
 2) Create a virtual environment and activate it.  
 3) Install dependencies (adjust versions as needed):
 ```
-pip install -U fastapi[standard] uvicorn llama-index tavily ollama tenacity
+pip install -r requirements.txt
 ```
 4) Export required environment variables:
 ```
-set tavily_api_key=YOUR_KEY_HERE        # Windows cmd
-# or: $env:tavily_api_key="YOUR_KEY_HERE"  # PowerShell
+set TAVILY_API_KEY=YOUR_KEY_HERE        # Windows cmd
+# or: $env:TAVILY_API_KEY="YOUR_KEY_HERE"  # PowerShell
 ```
 
 Running the API
 ---------------
 Start the FastAPI app with uvicorn:
 ```
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+uvicorn app.main:app --host 127.0.0.1 --port 8501
 ```
 The lifespan handler loads the LLM at startup with retries.
 
@@ -60,7 +60,7 @@ API Usage
 Body:
 ```
 {
-  "query": "How will low-earth orbit satellite demand evolve by 2030?"
+  "text": "How will low-earth orbit satellite demand evolve by 2030?"
 }
 ```
 Response:
@@ -74,9 +74,9 @@ Response:
 `POST /v1/agent/stream`  
 The endpoint streams `progress` events followed by a final `response` event. Example curl:
 ```
-curl -N -H "Content-Type: application/json" ^
-  -X POST http://localhost:8000/v1/agent/stream ^
-  -d "{\"query\": \"State of quantum error correction\"}"
+curl -N -H "Content-Type: application/json" \
+  -X POST http://127.0.0.1:8501/v1/agent/stream \
+  -d '{"text": "State of quantum error correction"}'
 ```
 You will receive lines like:
 ```

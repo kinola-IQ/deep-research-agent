@@ -3,10 +3,10 @@ from abc import ABC, abstractmethod
 import time
 
 # model providers to iterate through
-from ollama import Ollama
+from langchain_community.llms import Ollama
 
 # modules
-from ..logger import logger
+from ..utils.logger import logger
 
 
 # enforcing every model provider class to be defined the same way
@@ -31,25 +31,20 @@ class OllamaClass(LLM):
         :param model_list: Description
         :type model_list: list[str]
         """
+        self.model_name  = None
         self.model_list: list[str] = ['qwen3:4b', 'gemma3:4b']
-        self.model, self.model_name: str = self._load_model()
+        self.model  = self._load_model()
 
     def _load_model(self):
         """
         Generator that loads models from self.model_list one by one.
-        - Measures load time for each model.
-        - Skips models that take longer than 5 seconds to load.
-        - Yields and returns successfully loaded model.
         """
         for model_name in self.model_list:
-            start_time = time.perf_counter()
             try:
-                model = Ollama(model_name)
+                model = Ollama(model=model_name)
+                self.model_name = model_name
+                logger.info(f"Selected model: {model_name}")
+                return model
             except Exception as err:
-                logger.info(f'error occured: {err}')
-            load_time = time.perf_counter() - start_time
-            logger.info(f"Model {model_name} loaded in {load_time:.2f}s")
-            if load_time <= 5:
-                logger.info(f"Model {model_name} successfully loaded in {load_time:.2f}s")
-                yield model, model_name
-                return  # stop after first fast model
+                logger.error(f"Failed to init {model_name}: {err}")
+        raise RuntimeError("No Ollama models could be initialized")

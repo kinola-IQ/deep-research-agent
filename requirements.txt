@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+llama-index
+langchain-community
+tavily
+tenacity
+requests
+streamlit

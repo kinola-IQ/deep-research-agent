@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 # we need consistent formatting for made requests and agent response
 class UserRequest(BaseModel):
-    """blueprint for user reuests"""
-    query: str
+    """Blueprint for user requests (request body should provide `text`)."""
+    text: str
 
 
 class AgentResponse(BaseModel):
