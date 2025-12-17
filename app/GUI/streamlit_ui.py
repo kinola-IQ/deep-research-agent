@@ -29,7 +29,7 @@ def user_interface():
 
     # Allow manual refresh of health
     if st.sidebar.button("Refresh health"):
-        st.experimental_rerun()
+        st.rerun()
 
     # Main page health banner + auto-retry
     status_placeholder = st.empty()
@@ -50,7 +50,7 @@ def user_interface():
                 progress.progress(int((i / max_tries) * 100))
                 if ok:
                     st.success("Model loaded — backend is ready ✅")
-                    st.experimental_rerun()
+                    st.rerun()
                     break
                 # show countdown
                 for sec in range(interval, 0, -1):

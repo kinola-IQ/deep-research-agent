@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import time
 
 # model providers to iterate through
-from langchain_community.llms import Ollama
+from llama_index.llms.ollama import Ollama
 
 # modules
 from ..utils.logger import logger

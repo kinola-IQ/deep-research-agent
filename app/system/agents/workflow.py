@@ -39,7 +39,7 @@ class WorkflowClass(Workflow):
     @step
     async def generate_questions(self, ctx: Context, ev: GenerateEvent | FeedbackEvent) -> QuestionEvent:
 
-        await ctx.set("research_topic", ev.research_topic)
+        await ctx.store.set("research_topic", ev.research_topic)
         ctx.write_event_to_stream(ProgressEvent(msg=f"Research topic is {ev.research_topic}"))
 
         prompt = f"""Generate some questions on the topic <topic>{ev.research_topic}</topic>."""
@@ -58,7 +58,7 @@ class WorkflowClass(Workflow):
         questions = [line.strip() for line in lines if line.strip() != ""]
 
         # Record how many answers we're going to need to wait for
-        await ctx.set("total_questions", len(questions))
+        await ctx.store.set("total_questions", len(questions))
 
         # Fire off multiple Answer Agents
         for question in questions:
