@@ -1,4 +1,4 @@
-Deep Research Agent
+Deep Research Multi-Agent Assistant
 ===================
 
 A FastAPI service that orchestrates a multi-agent research workflow. It asks clarifying questions, performs web research, drafts a markdown report, and reviews the output with iterative feedback. Responses can be streamed via Server-Sent Events (SSE) for real-time progress updates.
