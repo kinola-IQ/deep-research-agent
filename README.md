@@ -3,6 +3,10 @@ Deep Research Multi-Agent Assistant
 
 A FastAPI service that orchestrates a multi-agent research workflow. It asks clarifying questions, performs web research, drafts a markdown report, and reviews the output with iterative feedback. Responses can be streamed via Server-Sent Events (SSE) for real-time progress updates.
 
+Visual representation of the workflow
+--------
+![image alt](https://github.com/kinola-IQ/Deep-Research-Multi-Agent-Assistant/blob/0245963d7c09257a40be1db618b094f8cd3946fc/workflow%20diagram.png)
+
 Features
 --------
 - Workflow-driven orchestration (llama_index workflow) coordinating question, research, report-writing, and review agents.
